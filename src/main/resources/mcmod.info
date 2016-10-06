@@ -1,0 +1,17 @@
+[
+{
+	"modid": "chuunimod",
+	"name": "ChuuniMod",
+	"description": "The Chuunibyou demo Koi ga Shitai! mod",
+	"version": "${version}",
+	"mcversion": "${mcversion}",
+	"url": "",
+	"updateUrl": "",
+	"authorList": ["tripl3dogdare"],
+	"credits": "",
+	"logoFile": "",
+	"screenshots": [],
+	"dependencies": []
+}
+]
+
