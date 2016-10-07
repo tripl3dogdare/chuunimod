@@ -17,7 +17,7 @@ class ChuuniEventHandler {
 	
 	@SubscribeEvent def addPlayerCapabilities(e:AttachCapabilitiesEvent.Entity) {
 		if(e.getEntity.isInstanceOf[EntityPlayer])
-			e.addCapability(new ResourceLocation(ChuuniMod.MODID, "ManaHandler"), new ManaHandler.DefaultHandler())
+			e.addCapability(new ResourceLocation(ChuuniMod.MODID, "ManaHandler"), ManaHandler.getHandlerInstance)
 	}
 	
 	@SubscribeEvent def persistPlayerCapabilities(e:PlayerEvent.Clone) {

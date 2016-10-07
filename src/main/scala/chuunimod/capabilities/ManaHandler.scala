@@ -24,62 +24,70 @@ import net.minecraftforge.fml.relauncher.Side
 
 trait ManaHandlerLike {
 	var mana,maxMana,manaRegen:Float
-	var dirty:Boolean = true
 	
-	def setMana(amt:Float) = { mana = amt; dirty = true }
-	def setMaxMana(amt:Float) = { maxMana = amt; dirty = true }
-	def setManaRegen(amt:Float) = { manaRegen = amt; dirty = true }
+	def setMana(amt:Float) = mana = amt
+	def setMaxMana(amt:Float) = maxMana = amt
+	def setManaRegen(amt:Float) = manaRegen = amt
 	
-	def consumeMana(amt:Float):Boolean = if(mana < amt) false else { setMana(mana-amt); true; }
-	def regenMana(amt:Float):Boolean = if(mana == maxMana) false else { setMana(Math.min(mana+amt, maxMana)); true; }
+	def consumeMana(amt:Float):Boolean = if(mana < amt) false else { setMana(mana-amt); true }
+	def regenMana(amt:Float):Boolean = if(mana == maxMana) false else { setMana(Math.min(mana+amt, maxMana)); true }
 	
 	def copyTo(other:ManaHandlerLike, copyCurrent:Boolean=true) { 
 		if(copyCurrent) other.setMana(mana)
 		other.setMaxMana(maxMana)
 		other.setManaRegen(manaRegen)
 	}
-	
-	def updateClient(player:EntityPlayer) = if(!player.worldObj.isRemote) { 
-		if(dirty) ChuuniMod.network.sendTo(new MessageUpdateClientMana(this), player.asInstanceOf[EntityPlayerMP])
-		dirty = false
-	}
 }
 
-abstract class ManaHandler(var mana:Float = 0, var maxMana:Float = 0, var manaRegen:Float = 0) extends ManaHandlerLike
+abstract class ManaHandler(var mana:Float = 0, var maxMana:Float = 0, var manaRegen:Float = 0) extends ManaHandlerLike {
+	private var dirty:Boolean = true
+	
+	override def setMana(amt:Float) = { super.setMana(amt); dirty = true }
+	override def setMaxMana(amt:Float) = { super.setMaxMana(amt); dirty = true }
+	override def setManaRegen(amt:Float) = { super.setManaRegen(amt); dirty = true }
+	
+	def updateClient(player:EntityPlayer) = 
+		if(!player.worldObj.isRemote && dirty) { ChuuniMod.network.sendTo(new MessageUpdateClientMana(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
+}
 
 object ManaHandler {
 	@CapabilityInject(classOf[ManaHandler]) final val CAP:Capability[ManaHandler] = null
 	
 	def instanceFor(player:EntityPlayer) = player.getCapability(CAP, null)
-	def getStorageInstance = new DefaultStorage
-	def getHandlerFactory = new Callable[DefaultHandler] { def call = new DefaultHandler }
-	
-	class DefaultHandler(cur:Float=0,max:Float=250,regen:Float=.25f) extends ManaHandler(cur,max,regen) with ICapabilitySerializable[NBTTagCompound] {
-		def hasCapability(capability:Capability[_], f:EnumFacing) = capability == ManaHandler.CAP
-		def getCapability[T](capability:Capability[T], f:EnumFacing) = { if(capability == ManaHandler.CAP) this else null }.asInstanceOf[T]
-		
-		def serializeNBT:NBTTagCompound = {
-			val nbt = new NBTTagCompound
-			nbt.setFloat("mana", mana)
-			nbt.setFloat("maxMana", maxMana)
-			nbt.setFloat("manaRegen", manaRegen)
-			nbt
-		}
-		
-		def deserializeNBT(nbt:NBTTagCompound) {
-			mana = nbt.getFloat("mana")
-			maxMana = nbt.getFloat("maxMana")
-			manaRegen = nbt.getFloat("manaRegen")
-			dirty = true
-		}
-	}
-	
-	class DefaultStorage extends IStorage[ManaHandler] {
-		def writeNBT(cap:Capability[ManaHandler], ins:ManaHandler, f:EnumFacing) = ins.asInstanceOf[DefaultHandler].serializeNBT
-		def readNBT(cap:Capability[ManaHandler], ins:ManaHandler, f:EnumFacing, nbt:NBTBase) = ins.asInstanceOf[DefaultHandler].deserializeNBT(nbt.asInstanceOf[NBTTagCompound])
-	}
+	def getHandlerInstance = new DefaultManaHandler
+	def getStorageInstance = new DefaultManaHandler.Storage
+	def getHandlerFactory = new Callable[DefaultManaHandler] { def call = new DefaultManaHandler }
 }
 	
+class DefaultManaHandler(cur:Float=0,max:Float=250,regen:Float=.25f) extends ManaHandler(cur,max,regen) with ICapabilitySerializable[NBTTagCompound] {
+	def hasCapability(capability:Capability[_], f:EnumFacing) = capability == ManaHandler.CAP
+	def getCapability[T](capability:Capability[T], f:EnumFacing) = { if(capability == ManaHandler.CAP) this else null }.asInstanceOf[T]
+	
+	def serializeNBT:NBTTagCompound = new NBTManaHandler(this).nbt
+	def deserializeNBT(nbt:NBTTagCompound) = new NBTManaHandler(nbt).copyTo(this)
+}
+
+object DefaultManaHandler {
+	class Storage extends IStorage[ManaHandler] {
+		def writeNBT(cap:Capability[ManaHandler], ins:ManaHandler, f:EnumFacing) = ins.asInstanceOf[DefaultManaHandler].serializeNBT
+		def readNBT(cap:Capability[ManaHandler], ins:ManaHandler, f:EnumFacing, nbt:NBTBase) = ins.asInstanceOf[DefaultManaHandler].deserializeNBT(nbt.asInstanceOf[NBTTagCompound])
+	}
+}
+
+class NBTManaHandler(val nbt:NBTTagCompound) extends ManaHandlerLike {
+	var mana = nbt.getFloat("mana")
+	var maxMana = nbt.getFloat("maxMana")
+	var manaRegen = nbt.getFloat("manaRegen")
+	
+	def this(mh:ManaHandlerLike) = this({
+		val nbt = new NBTTagCompound
+		nbt.setFloat("mana", mh.mana)
+		nbt.setFloat("maxMana", mh.maxMana)
+		nbt.setFloat("manaRegen", mh.manaRegen)
+		nbt
+	})
+}
+
 class MessageUpdateClientMana(mh:ManaHandlerLike) extends IMessage with ManaHandlerLike {
 	var mana,maxMana,manaRegen:Float = 0
 	if(mh != null) mh.copyTo(this)
