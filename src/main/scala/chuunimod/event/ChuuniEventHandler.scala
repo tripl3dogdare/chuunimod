@@ -32,7 +32,7 @@ class ChuuniEventHandler {
 	//===== PLAYER TICK =====//
 	
 	@SubscribeEvent def onPlayerTick(e:PlayerTickEvent) {
-		if(e.phase != Phase.END) return
+		if(e.phase != Phase.END || e.player.isDead) return
 		
 		updatePlayerMana(e.player)
 	}
