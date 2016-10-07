@@ -30,11 +30,8 @@ class ClientProxy extends ServerProxy {
 		MinecraftForge.EVENT_BUS.register(new GuiManaOverlay)
 	}
 	
-	def registerItemModels {
-	}
-	
-	def registerBlockModels {
-	}
+	def registerItemModels {}
+	def registerBlockModels {}
 	
 	def registerNetworkPackets {
 		MessageUpdateClientMana.register(ChuuniMod.network, 0)

@@ -22,8 +22,8 @@ class ChuuniEventHandler {
 	
 	@SubscribeEvent def persistPlayerCapabilities(e:PlayerEvent.Clone) {
 		if(e.isWasDeath()) {
-			val cnew = ManaHandler.instanceFor(e.getEntityPlayer())
-			val cold = ManaHandler.instanceFor(e.getOriginal())
+			val cnew = ManaHandler.instanceFor(e.getEntityPlayer)
+			val cold = ManaHandler.instanceFor(e.getOriginal)
 			
 			cold.copyTo(cnew, false)
 		}
