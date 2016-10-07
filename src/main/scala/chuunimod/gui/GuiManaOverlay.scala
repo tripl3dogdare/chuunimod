@@ -16,7 +16,7 @@ class GuiManaOverlay extends Gui {
 		val fr = mc.fontRendererObj;
 		val mh = mc.thePlayer.getCapability(ManaHandler.CAP, null);
 		
-		drawString(fr, I18n.format("gui.chuunimod.mana", Math.floor(mh.mana).asInstanceOf[Object], Math.floor(mh.maxMana).asInstanceOf[Object]), 10, 10, 16777215)
+		drawString(fr, I18n.format("gui.chuunimod.mana", mh.mana.toInt.asInstanceOf[Object], mh.maxMana.toInt.asInstanceOf[Object]), 10, 10, 16777215)
 	}
 	
 }
