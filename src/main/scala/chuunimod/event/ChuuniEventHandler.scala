@@ -36,6 +36,7 @@ class ChuuniEventHandler {
 		if(e.phase != Phase.END || e.player.isDead) return
 		
 		updatePlayerMana(e.player)
+		updatePlayerLevel(e.player)
 	}
 	
 	def updatePlayerMana(player:EntityPlayer) = if(!player.worldObj.isRemote) {
@@ -43,6 +44,12 @@ class ChuuniEventHandler {
 		
 		mh.regenMana(mh.manaRegen)
 		mh.updateClient(player)
+	}
+	
+	def updatePlayerLevel(player:EntityPlayer) = if(!player.worldObj.isRemote) {
+		val lh = LevelHandler.instanceFor(player)
+
+		lh.updateClient(player)
 	}
 	
 }
