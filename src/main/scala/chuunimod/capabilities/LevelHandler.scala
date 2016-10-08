@@ -86,7 +86,7 @@ class NBTLevelHandler(val nbt:NBTTagCompound) extends LevelHandlerLike {
 	})
 }
 
-class MessageUpdateClientLevel(lh:LevelHandlerLike) extends IMessage with LevelHandlerLike {
+class MessageUpdateClientLevel(lh:LevelHandlerLike=null) extends IMessage with LevelHandlerLike {
 	var level:Int = 0
 	var exp:Float = 0
 	if(lh != null) lh.copyTo(this)

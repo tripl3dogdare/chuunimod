@@ -86,11 +86,9 @@ class NBTManaHandler(val nbt:NBTTagCompound) extends ManaHandlerLike {
 	})
 }
 
-class MessageUpdateClientMana(mh:ManaHandlerLike) extends IMessage with ManaHandlerLike {
+class MessageUpdateClientMana(mh:ManaHandlerLike=null) extends IMessage with ManaHandlerLike {
 	var mana,maxMana,manaRegen:Float = 0
 	if(mh != null) mh.copyTo(this)
-	
-	def this() = this(null)
 	
 	def fromBytes(buf:ByteBuf) { this.mana = buf.readFloat; this.maxMana = buf.readFloat; this.manaRegen = buf.readFloat }
 	def toBytes(buf:ByteBuf) { List(this.mana, this.maxMana, this.manaRegen) foreach buf.writeFloat }
