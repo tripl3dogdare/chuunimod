@@ -21,32 +21,37 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
 import net.minecraftforge.fml.relauncher.Side
 
 trait LevelHandlerLike {
-	var level:Int
+	var level,maxLevel:Int
 	var exp:Float
-	def expToNext = level*level*100
+	def expToNext = if(level >= maxLevel) 0 else level*level*100
 	
-	def setLevel(lvl:Int) = level = lvl
-	def setExp(amt:Float) = {
-		exp = amt
-		
+	def setLevel(lvl:Int) { level = lvl; updateLevelInfo }
+	def setExp(amt:Float) { exp = amt; updateLevelInfo }
+	def setMaxLevel(lvl:Int) = maxLevel = lvl
+	def addExp(amt:Float) = setExp(exp+amt)
+	
+	def updateLevelInfo {
 		while(exp > expToNext) {
 			exp -= expToNext
 			level += 1
 		}
+		
+		if(level >= maxLevel) { level = maxLevel; exp = 0 }
 	}
-	def addExp(amt:Float) = setExp(exp+amt)
 	
 	def copyTo(lh:LevelHandlerLike) {
+		lh.setMaxLevel(maxLevel)
 		lh.setLevel(level)
 		lh.setExp(exp)
 	}
 }
 
-abstract class LevelHandler(var level:Int = 0, var exp:Float = 0) extends LevelHandlerLike {
+abstract class LevelHandler(var level:Int = 0, var exp:Float = 0, var maxLevel:Int = 0) extends LevelHandlerLike {
 	private var dirty = true
 	
-	override def setLevel(lvl:Int) = { super.setLevel(lvl); dirty = true }
-	override def setExp(exp:Float) = { super.setExp(exp); dirty = true }
+	override def setLevel(lvl:Int) { super.setLevel(lvl); dirty = true }
+	override def setExp(amt:Float) { super.setExp(amt); dirty = true }
+	override def setMaxLevel(lvl:Int) { super.setMaxLevel(lvl); dirty = true }
 
 	def updateClient(player:EntityPlayer) = 
 		if(!player.worldObj.isRemote && dirty) { ChuuniMod.network.sendTo(new MessageUpdateClientLevel(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
@@ -59,7 +64,7 @@ object LevelHandler {
 	def getHandlerFactory = new Callable[DefaultLevelHandler] { def call = new DefaultLevelHandler }
 }
 
-class DefaultLevelHandler(lvl:Int=1,xp:Float=0) extends LevelHandler(lvl,xp) with ICapabilitySerializable[NBTTagCompound] {
+class DefaultLevelHandler(lvl:Int=1,xp:Float=0,max:Int=100) extends LevelHandler(lvl,xp,max) with ICapabilitySerializable[NBTTagCompound] {
 	def hasCapability(capability:Capability[_], f:EnumFacing) = capability == Capabilities.LEVEL
 	def getCapability[T](capability:Capability[T], f:EnumFacing) = { if(capability == Capabilities.LEVEL) this else null }.asInstanceOf[T]
 	
@@ -77,24 +82,26 @@ object DefaultLevelHandler {
 class NBTLevelHandler(val nbt:NBTTagCompound) extends LevelHandlerLike {
 	var level = nbt.getInteger("level")
 	var exp = nbt.getFloat("exp")
+	var maxLevel = nbt.getInteger("maxLevel")
 	
 	def this(lh:LevelHandlerLike) = this({
 		val nbt = new NBTTagCompound
 		nbt.setInteger("level", lh.level)
 		nbt.setFloat("exp", lh.exp)
+		nbt.setInteger("maxLevel", lh.maxLevel)
 		nbt
 	})
 }
 
 class MessageUpdateClientLevel(lh:LevelHandlerLike) extends IMessage with LevelHandlerLike {
-	var level:Int = 0
+	var level,maxLevel:Int = 0
 	var exp:Float = 0
 	if(lh != null) lh.copyTo(this)
 	
 	def this() = this(null)
 	
-	def fromBytes(buf:ByteBuf) { level = buf.readInt; exp = buf.readFloat }
-	def toBytes(buf:ByteBuf) { buf.writeInt(level); buf.writeFloat(exp) }
+	def fromBytes(buf:ByteBuf) { level = buf.readInt; exp = buf.readFloat; maxLevel = buf.readInt }
+	def toBytes(buf:ByteBuf) { buf.writeInt(level); buf.writeFloat(exp); buf.writeInt(maxLevel) }
 }
 
 object MessageUpdateClientLevel {
