@@ -18,6 +18,7 @@ import net.minecraft.entity.boss.EntityDragon
 import net.minecraft.entity.boss.EntityWither
 import java.util.concurrent.ThreadLocalRandom
 import net.minecraft.entity.monster.EntityGhast
+import net.minecraftforge.event.entity.EntityJoinWorldEvent
 
 class ChuuniEventHandler {
 	
@@ -31,16 +32,21 @@ class ChuuniEventHandler {
 	}
 	
 	@SubscribeEvent def persistPlayerCapabilities(e:PlayerEvent.Clone) {
-		if(e.isWasDeath()) {
-			ManaHandler.instanceFor(e.getOriginal).copyTo(ManaHandler.instanceFor(e.getEntityPlayer), false)
-			LevelHandler.instanceFor(e.getOriginal).copyTo(LevelHandler.instanceFor(e.getEntityPlayer))
-		}
+		ManaHandler.instanceFor(e.getOriginal).copyTo(ManaHandler.instanceFor(e.getEntityPlayer), !e.isWasDeath)
+		LevelHandler.instanceFor(e.getOriginal).copyTo(LevelHandler.instanceFor(e.getEntityPlayer))
+	}
+	
+	@SubscribeEvent def updateClientOnJoinWorld(e:EntityJoinWorldEvent) {
+		val player = if(e.getEntity.isInstanceOf[EntityPlayer]) e.getEntity.asInstanceOf[EntityPlayer] else return
+		
+		ManaHandler.instanceFor(player).updateClient(player, true)
+		LevelHandler.instanceFor(player).updateClient(player, true)
 	}
 	
 	//===== PLAYER TICK =====//
 	
 	@SubscribeEvent def onPlayerTick(e:PlayerTickEvent) {
-		if(e.phase != Phase.END || e.player.isDead) return
+		if(e.phase != Phase.END) return
 		
 		if(!e.player.worldObj.isRemote) {
 			updatePlayerMana(e.player)
@@ -51,7 +57,7 @@ class ChuuniEventHandler {
 	def updatePlayerMana(player:EntityPlayer) {
 		val mh = ManaHandler.instanceFor(player)
 		
-		mh.regenMana(mh.manaRegen)
+		if(!player.isDead) mh.regenMana(mh.manaRegen)
 		mh.updateClient(player)
 	}
 	

@@ -53,8 +53,8 @@ abstract class LevelHandler(var level:Int = 0, var exp:Float = 0, var maxLevel:I
 	override def setExp(amt:Float) { val old = exp; super.setExp(amt); dirty = dirty || old != exp }
 	override def setMaxLevel(lvl:Int) { val old = maxLevel; super.setMaxLevel(lvl); dirty = dirty || old != maxLevel }
 
-	def updateClient(player:EntityPlayer) = 
-		if(!player.worldObj.isRemote && dirty) { ChuuniMod.network.sendTo(new MessageUpdateClientLevel(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
+	def updateClient(player:EntityPlayer, force:Boolean=false) = 
+		if(!player.worldObj.isRemote && (force || dirty)) { ChuuniMod.network.sendTo(new MessageUpdateClientLevel(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
 }
 
 object LevelHandler {

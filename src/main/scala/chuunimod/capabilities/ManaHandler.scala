@@ -46,8 +46,8 @@ abstract class ManaHandler(var mana:Float = 0, var maxMana:Float = 0, var manaRe
 	override def setMaxMana(amt:Float) = { val old = maxMana; super.setMaxMana(amt); dirty = dirty || old != maxMana }
 	override def setManaRegen(amt:Float) = { val old = manaRegen; super.setManaRegen(amt); dirty = dirty || old != manaRegen }
 	
-	def updateClient(player:EntityPlayer) = 
-		if(!player.worldObj.isRemote && dirty) { ChuuniMod.network.sendTo(new MessageUpdateClientMana(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
+	def updateClient(player:EntityPlayer, force:Boolean=false) = 
+		if(!player.worldObj.isRemote && (force || dirty)) { ChuuniMod.network.sendTo(new MessageUpdateClientMana(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
 }
 
 object ManaHandler {
