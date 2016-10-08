@@ -101,7 +101,7 @@ object MessageUpdateClientLevel {
 	class Handler extends IMessageHandler[MessageUpdateClientLevel, IMessage] {
 		def onMessage(msg:MessageUpdateClientLevel, ctx:MessageContext):IMessage = {
 			Minecraft.getMinecraft.addScheduledTask(new Runnable { def run = {
-				val player = Minecraft.getMinecraft().thePlayer;
+				val player = Minecraft.getMinecraft.thePlayer
 				val lh = LevelHandler.instanceFor(player)
 				
 				msg.copyTo(lh)

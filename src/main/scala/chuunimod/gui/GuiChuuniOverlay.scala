@@ -12,9 +12,9 @@ import chuunimod.capabilities.LevelHandler
 class GuiChuuniOverlay extends Gui {
 	
 	@SubscribeEvent def onRenderGameOverlay(e:RenderGameOverlayEvent.Post) {
-		if(e.getType() != ElementType.EXPERIENCE) return;
-		val mc = Minecraft.getMinecraft();
-		val fr = mc.fontRendererObj;
+		if(e.getType != ElementType.EXPERIENCE) return
+		val mc = Minecraft.getMinecraft
+		val fr = mc.fontRendererObj
 		
 		val mh = ManaHandler.instanceFor(mc.thePlayer)
 		drawString(fr, I18n.format("gui.chuunimod.mana", mh.mana.toInt.asInstanceOf[Object], mh.maxMana.toInt.asInstanceOf[Object]), 10, 10, 16777215)

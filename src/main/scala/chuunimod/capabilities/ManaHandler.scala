@@ -100,7 +100,7 @@ object MessageUpdateClientMana {
 	class Handler extends IMessageHandler[MessageUpdateClientMana, IMessage] {
 		def onMessage(msg:MessageUpdateClientMana, ctx:MessageContext):IMessage = {
 			Minecraft.getMinecraft.addScheduledTask(new Runnable { def run = {
-				val player = Minecraft.getMinecraft().thePlayer;
+				val player = Minecraft.getMinecraft.thePlayer
 				val mh = ManaHandler.instanceFor(player)
 				
 				msg.copyTo(mh)
