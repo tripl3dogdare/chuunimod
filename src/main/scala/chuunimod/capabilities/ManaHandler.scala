@@ -42,9 +42,9 @@ trait ManaHandlerLike {
 abstract class ManaHandler(var mana:Float = 0, var maxMana:Float = 0, var manaRegen:Float = 0) extends ManaHandlerLike {
 	private var dirty = true
 	
-	override def setMana(amt:Float) = { super.setMana(amt); dirty = true }
-	override def setMaxMana(amt:Float) = { super.setMaxMana(amt); dirty = true }
-	override def setManaRegen(amt:Float) = { super.setManaRegen(amt); dirty = true }
+	override def setMana(amt:Float) = { val old = mana; super.setMana(amt); dirty = dirty || old != mana }
+	override def setMaxMana(amt:Float) = { val old = maxMana; super.setMaxMana(amt); dirty = dirty || old != maxMana }
+	override def setManaRegen(amt:Float) = { val old = manaRegen; super.setManaRegen(amt); dirty = dirty || old != manaRegen }
 	
 	def updateClient(player:EntityPlayer) = 
 		if(!player.worldObj.isRemote && dirty) { ChuuniMod.network.sendTo(new MessageUpdateClientMana(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }

@@ -49,9 +49,9 @@ trait LevelHandlerLike {
 abstract class LevelHandler(var level:Int = 0, var exp:Float = 0, var maxLevel:Int = 0) extends LevelHandlerLike {
 	private var dirty = true
 	
-	override def setLevel(lvl:Int) { super.setLevel(lvl); dirty = true }
-	override def setExp(amt:Float) { super.setExp(amt); dirty = true }
-	override def setMaxLevel(lvl:Int) { super.setMaxLevel(lvl); dirty = true }
+	override def setLevel(lvl:Int) { val old = level; super.setLevel(lvl); dirty = dirty || old != level }
+	override def setExp(amt:Float) { val old = exp; super.setExp(amt); dirty = dirty || old != exp }
+	override def setMaxLevel(lvl:Int) { val old = maxLevel; super.setMaxLevel(lvl); dirty = dirty || old != maxLevel }
 
 	def updateClient(player:EntityPlayer) = 
 		if(!player.worldObj.isRemote && dirty) { ChuuniMod.network.sendTo(new MessageUpdateClientLevel(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
