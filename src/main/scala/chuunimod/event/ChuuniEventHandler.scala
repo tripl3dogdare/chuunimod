@@ -64,7 +64,7 @@ class ChuuniEventHandler {
 	//===== PLAYER KILLS ENEMY =====//
 	
 	@SubscribeEvent def onPlayerKillEnemy(e:LivingDeathEvent) {
-		if(!e.getEntity.worldObj.isRemote || !e.getSource.getEntity.isInstanceOf[EntityPlayer]) return
+		if(!e.getSource.getEntity.isInstanceOf[EntityPlayer]) return
 		
 		if(Set("player","fireball","arrow") contains e.getSource.getDamageType) {
 			val player = e.getSource.getEntity.asInstanceOf[EntityPlayer]
