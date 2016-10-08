@@ -40,7 +40,7 @@ trait ManaHandlerLike {
 }
 
 abstract class ManaHandler(var mana:Float = 0, var maxMana:Float = 0, var manaRegen:Float = 0) extends ManaHandlerLike {
-	private var dirty:Boolean = true
+	private var dirty = true
 	
 	override def setMana(amt:Float) = { super.setMana(amt); dirty = true }
 	override def setMaxMana(amt:Float) = { super.setMaxMana(amt); dirty = true }
@@ -51,17 +51,15 @@ abstract class ManaHandler(var mana:Float = 0, var maxMana:Float = 0, var manaRe
 }
 
 object ManaHandler {
-	@CapabilityInject(classOf[ManaHandler]) final val CAP:Capability[ManaHandler] = null
-	
-	def instanceFor(player:EntityPlayer) = player.getCapability(CAP, null)
+	def instanceFor(player:EntityPlayer) = player.getCapability(Capabilities.MANA, null)
 	def getHandlerInstance = new DefaultManaHandler
 	def getStorageInstance = new DefaultManaHandler.Storage
 	def getHandlerFactory = new Callable[DefaultManaHandler] { def call = new DefaultManaHandler }
 }
 	
 class DefaultManaHandler(cur:Float=0,max:Float=250,regen:Float=.25f) extends ManaHandler(cur,max,regen) with ICapabilitySerializable[NBTTagCompound] {
-	def hasCapability(capability:Capability[_], f:EnumFacing) = capability == ManaHandler.CAP
-	def getCapability[T](capability:Capability[T], f:EnumFacing) = { if(capability == ManaHandler.CAP) this else null }.asInstanceOf[T]
+	def hasCapability(capability:Capability[_], f:EnumFacing) = capability == Capabilities.MANA
+	def getCapability[T](capability:Capability[T], f:EnumFacing) = { if(capability == Capabilities.MANA) this else null }.asInstanceOf[T]
 	
 	def serializeNBT:NBTTagCompound = new NBTManaHandler(this).nbt
 	def deserializeNBT(nbt:NBTTagCompound) = new NBTManaHandler(nbt).copyTo(this)
