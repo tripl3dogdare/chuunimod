@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.Side
 trait LevelHandlerLike {
 	var level,maxLevel:Int
 	var exp:Float
-	def expToNext = if(level >= maxLevel) 0 else level*level*100
+	def expToNext = if(level >= maxLevel) 0 else Math.pow(level, 1.1).toFloat*100
 	
 	def setLevel(lvl:Int) { level = lvl; updateLevelInfo }
 	def setExp(amt:Float) { exp = amt; updateLevelInfo }
