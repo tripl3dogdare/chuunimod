@@ -40,26 +40,28 @@ trait ManaHandlerLike {
 }
 
 abstract class ManaHandler(var mana:Float = 0, var maxMana:Float = 0, var manaRegen:Float = 0) extends ManaHandlerLike {
-	private var dirty = true
+	private var dirty:Boolean = true
 	
-	override def setMana(amt:Float) = { val old = mana; super.setMana(amt); dirty = dirty || old != mana }
-	override def setMaxMana(amt:Float) = { val old = maxMana; super.setMaxMana(amt); dirty = dirty || old != maxMana }
-	override def setManaRegen(amt:Float) = { val old = manaRegen; super.setManaRegen(amt); dirty = dirty || old != manaRegen }
+	override def setMana(amt:Float) = { super.setMana(amt); dirty = true }
+	override def setMaxMana(amt:Float) = { super.setMaxMana(amt); dirty = true }
+	override def setManaRegen(amt:Float) = { super.setManaRegen(amt); dirty = true }
 	
-	def updateClient(player:EntityPlayer, force:Boolean=false) = 
-		if(!player.worldObj.isRemote && (force || dirty)) { ChuuniMod.network.sendTo(new MessageUpdateClientMana(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
+	def updateClient(player:EntityPlayer) = 
+		if(!player.worldObj.isRemote && dirty) { ChuuniMod.network.sendTo(new MessageUpdateClientMana(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
 }
 
 object ManaHandler {
-	def instanceFor(player:EntityPlayer) = player.getCapability(Capabilities.MANA, null)
+	@CapabilityInject(classOf[ManaHandler]) final val CAP:Capability[ManaHandler] = null
+	
+	def instanceFor(player:EntityPlayer) = player.getCapability(CAP, null)
 	def getHandlerInstance = new DefaultManaHandler
 	def getStorageInstance = new DefaultManaHandler.Storage
 	def getHandlerFactory = new Callable[DefaultManaHandler] { def call = new DefaultManaHandler }
 }
 	
 class DefaultManaHandler(cur:Float=0,max:Float=250,regen:Float=.25f) extends ManaHandler(cur,max,regen) with ICapabilitySerializable[NBTTagCompound] {
-	def hasCapability(capability:Capability[_], f:EnumFacing) = capability == Capabilities.MANA
-	def getCapability[T](capability:Capability[T], f:EnumFacing) = { if(capability == Capabilities.MANA) this else null }.asInstanceOf[T]
+	def hasCapability(capability:Capability[_], f:EnumFacing) = capability == ManaHandler.CAP
+	def getCapability[T](capability:Capability[T], f:EnumFacing) = { if(capability == ManaHandler.CAP) this else null }.asInstanceOf[T]
 	
 	def serializeNBT:NBTTagCompound = new NBTManaHandler(this).nbt
 	def deserializeNBT(nbt:NBTTagCompound) = new NBTManaHandler(nbt).copyTo(this)
@@ -100,7 +102,7 @@ object MessageUpdateClientMana {
 	class Handler extends IMessageHandler[MessageUpdateClientMana, IMessage] {
 		def onMessage(msg:MessageUpdateClientMana, ctx:MessageContext):IMessage = {
 			Minecraft.getMinecraft.addScheduledTask(new Runnable { def run = {
-				val player = Minecraft.getMinecraft.thePlayer
+				val player = Minecraft.getMinecraft().thePlayer;
 				val mh = ManaHandler.instanceFor(player)
 				
 				msg.copyTo(mh)
