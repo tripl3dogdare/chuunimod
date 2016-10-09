@@ -4,3 +4,5 @@
 itemGroup.chuunimod.main=The Chuunibyou Mod
 
 gui.chuunimod.mana=Mana: %s/%s
+gui.chuunimod.level=Level: %s
+gui.chuunimod.exp=Exp: %s/%s
