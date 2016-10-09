@@ -31,12 +31,12 @@ trait LevelHandlerLike {
 	def addExp(amt:Float) = setExp(exp+amt)
 	
 	def updateLevelInfo {
-		while(exp > expToNext) {
-			exp -= expToNext
-			level += 1
-		}
+		if(level >= maxLevel) { exp = 0; return }
 		
-		if(level >= maxLevel) { level = maxLevel; exp = 0 }
+		if(exp >= expToNext) {
+			exp -= expToNext
+			setLevel(Math.min(level+1, maxLevel))
+		}
 	}
 	
 	def copyTo(lh:LevelHandlerLike) {
@@ -48,10 +48,14 @@ trait LevelHandlerLike {
 
 abstract class LevelHandler(var level:Int = 0, var exp:Float = 0, var maxLevel:Int = 0) extends LevelHandlerLike {
 	private var dirty = true
+	private var lvupev = false
 	
-	override def setLevel(lvl:Int) { val old = level; super.setLevel(lvl); dirty = dirty || old != level }
-	override def setExp(amt:Float) { val old = exp; super.setExp(amt); dirty = dirty || old != exp }
-	override def setMaxLevel(lvl:Int) { val old = maxLevel; super.setMaxLevel(lvl); dirty = dirty || old != maxLevel }
+	def shouldFireLevelUpEvent:Boolean = { val o = lvupev; lvupev = false; o }
+	private def updateDirty[T <% Float](bfr:T, aft:T, isLevel:Boolean=false) = if(bfr != aft) { dirty = true; if(isLevel) lvupev = true }
+	
+	override def setLevel(lvl:Int) { val old = level; super.setLevel(lvl); updateDirty(old, level, true) }
+	override def setExp(amt:Float) { val old = exp; super.setExp(amt); updateDirty(old, exp) }
+	override def setMaxLevel(lvl:Int) { val old = maxLevel; super.setMaxLevel(lvl); updateDirty(old, maxLevel) }
 
 	def updateClient(player:EntityPlayer, force:Boolean=false) = 
 		if(!player.worldObj.isRemote && (force || dirty)) { ChuuniMod.network.sendTo(new MessageUpdateClientLevel(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }

@@ -19,6 +19,7 @@ import net.minecraft.entity.boss.EntityWither
 import java.util.concurrent.ThreadLocalRandom
 import net.minecraft.entity.monster.EntityGhast
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
+import net.minecraftforge.common.MinecraftForge
 
 class ChuuniEventHandler {
 	
@@ -64,6 +65,7 @@ class ChuuniEventHandler {
 	def updatePlayerLevel(player:EntityPlayer) {
 		val lh = LevelHandler.instanceFor(player)
 
+		if(lh.shouldFireLevelUpEvent) MinecraftForge.EVENT_BUS.post(new ChuuniLevelUpEvent(player, lh))
 		lh.updateClient(player)
 	}
 	
@@ -86,6 +88,13 @@ class ChuuniEventHandler {
 			}
 			lh.addExp(ThreadLocalRandom.current.nextDouble(expRange._1, expRange._2).toFloat)
 		}
+	}
+	
+	//===== CHUUNI EVENTS =====//
+	
+	@SubscribeEvent def onPlayerLevelUp(e:ChuuniLevelUpEvent) {
+		val mh = ManaHandler.instanceFor(e.player)
+		mh.setMaxMana(250*e.lh.level)
 	}
 	
 }
