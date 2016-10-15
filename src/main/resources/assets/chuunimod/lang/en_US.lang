@@ -4,15 +4,17 @@
 item.chuunimod.sspm2.name=Schwarz Sechs Prototype Mk.2
 item.chuunimod.sspm2.lore=In reality, just a beat-up pocket umbrella.
 item.chuunimod.sspm2.quote="In accordance with the covenant of blood, I summon thee, Wicked Lord!"
+
+item.chuunimod.tweseal.name=Seal of the Wicked Eye
+item.chuunimod.tweseal.lore=A medical eyepatch that looks like it's been used for many years.
+item.chuunimod.tweseal.quote="Reality be rent... Synapse, break... Banishment this world!"
+
 item.chuunimod.manaweapon.atkdmg=Attack Damage: %s damage
 item.chuunimod.manaweapon.atkspd=Attack Speed: %s attacks/sec
 item.chuunimod.manaweapon.manacost=Mana Cost: %s/sec
 item.chuunimod.manaweapon.cooldown=Cooldown: %s sec
 item.chuunimod.manaweapon.armor=When wearing %s:
 item.chuunimod.manaweapon.hidden=Press SHIFT to see stats
-item.chuunimod.tweseal.name=Seal of the Wicked Eye
-item.chuunimod.tweseal.lore=A medical eyepatch that looks like it's been used for many years.
-item.chuunimod.tweseal.quote="Reality be rent... Synapse, break... Banishment this world!"
 
 # Misc
 itemGroup.chuunimod.main=The Chuunibyou Mod
