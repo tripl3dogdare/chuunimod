@@ -2,11 +2,21 @@
 
 This is a project I started a while back, coding in Java and honestly doing everything wrong. So, since I still really like the idea, I'm now starting again in Scala, with a much better head on my shoulders (at least I hope) and much better motivation to actually continue the project.
 
-## Roadmap
+## Roadmap/TODO
 
-- [ ] Add a bunch of Chuunibyou related stuff
-- [ ] Have it be awesome
-- [ ] Don't actually be a n00b and drop the project again
+- [x] Mana System
+- [x] Level System
+- [x] Tyrant's Eye Weapon/Armor Set
+- [ ] The Priestess Set
+- [ ] Dark Flame Master Set
+- [ ] Mjolnir Hammer Set
+- [ ] Mori Summer Set
+- [ ] Sophia Ring SP Saturn VII Set
+- [ ] Angel of Sleep Set
+- [ ] Properly balance sets
+- [ ] Lots of random/cute little references
+- [ ] 3D weapon models
+- [ ] and more...
 
 ## Previous Version Archive
 
