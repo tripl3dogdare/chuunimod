@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "chuunimod:items/sspm2_normal"
+    }
+}

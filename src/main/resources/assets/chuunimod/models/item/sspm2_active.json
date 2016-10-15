@@ -1,0 +1,26 @@
+{
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "chuunimod:items/sspm2_active"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0,-90,0],
+			"translation": [0,22,15],
+			"scale": [4,4,3]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0,90,0],
+			"translation": [0,22,15],
+			"scale": [4,4,3]
+		},
+		"firstperson_righthand": {
+			"rotation": [0,-90,45],
+			"scale": [2,2,2]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0,90,-45],
+			"scale": [2,2,2]
+		}
+	}
+}
