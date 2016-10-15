@@ -1,25 +1,25 @@
 package chuunimod.event
 
+import java.util.concurrent.ThreadLocalRandom
+
 import chuunimod.ChuuniMod
+import chuunimod.capabilities.LevelHandler
 import chuunimod.capabilities.ManaHandler
+import net.minecraft.entity.boss.EntityDragon
+import net.minecraft.entity.boss.EntityWither
+import net.minecraft.entity.monster.EntityGhast
+import net.minecraft.entity.monster.EntityMob
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.AttachCapabilitiesEvent
+import net.minecraftforge.event.entity.EntityJoinWorldEvent
+import net.minecraftforge.event.entity.living.LivingDeathEvent
 import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent
-import chuunimod.capabilities.LevelHandler
-import net.minecraftforge.event.entity.living.LivingDeathEvent
-import java.util.Random
-import net.minecraft.entity.monster.EntityMob
-import net.minecraft.entity.boss.EntityDragon
-import net.minecraft.entity.boss.EntityWither
-import java.util.concurrent.ThreadLocalRandom
-import net.minecraft.entity.monster.EntityGhast
-import net.minecraftforge.event.entity.EntityJoinWorldEvent
-import net.minecraftforge.common.MinecraftForge
 
 class ChuuniEventHandler {
 	
@@ -69,7 +69,7 @@ class ChuuniEventHandler {
 		lh.updateClient(player)
 	}
 	
-	//===== PLAYER KILLS ENEMY =====//
+	//===== HURT/KILL ENEMY =====//
 	
 	@SubscribeEvent def onPlayerKillEnemy(e:LivingDeathEvent) {
 		if(!e.getSource.getEntity.isInstanceOf[EntityPlayer]) return
