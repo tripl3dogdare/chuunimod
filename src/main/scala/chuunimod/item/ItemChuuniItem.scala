@@ -13,8 +13,10 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.fml.relauncher.Side
+import chuunimod.MiscRegistry
 
 trait ItemChuuniItem extends Item {
+	this.setCreativeTab(MiscRegistry.tabMain)
 	protected val defaultTag:NBTTagCompound = new NBTTagCompound
 	
 	@SideOnly(Side.CLIENT)
@@ -32,4 +34,9 @@ trait ItemChuuniItem extends Item {
 			if(!stack.getTagCompound.hasKey(key)) stack.getTagCompound.setTag(key, defaultTag.getTag(key).copy)
 		}
 	}
+}
+
+object ItemAttributeModifiers extends Item {
+	final def ATTACK_DAMAGE_MODIFIER = Item.ATTACK_DAMAGE_MODIFIER
+	final def ATTACK_SPEED_MODIFIER = Item.ATTACK_SPEED_MODIFIER
 }
