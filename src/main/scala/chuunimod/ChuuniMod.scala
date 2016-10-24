@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.minecraftforge.fml.common.network.NetworkRegistry
 
-@Mod(modid = "chuunimod", name = "The Chuunibyou Mod", version = "INDEV", dependencies = "", modLanguage = "scala")
+@Mod(modid = ChuuniMod.MODID, name = ChuuniMod.NAME, version = ChuuniMod.VERSION, dependencies = ChuuniMod.DEPS, modLanguage = "scala")
 object ChuuniMod {
 	final val MODID   = "chuunimod"
 	final val NAME    = "The Chuunibyou Mod"

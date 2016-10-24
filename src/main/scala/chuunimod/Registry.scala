@@ -3,11 +3,9 @@ package chuunimod
 import chuunimod.item.ItemArmorPairingManaWeapon
 import chuunimod.item.ItemCharacterArmor
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.init.Items
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.registry.GameRegistry
 
 object Registry {
