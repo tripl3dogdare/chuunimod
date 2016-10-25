@@ -1,5 +1,6 @@
 package chuunimod.gui
 
+import chuunimod.capabilities.LevelHandler
 import chuunimod.capabilities.ManaHandler
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -7,7 +8,6 @@ import net.minecraft.client.resources.I18n
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import chuunimod.capabilities.LevelHandler
 
 class GuiChuuniOverlay extends Gui {
 	

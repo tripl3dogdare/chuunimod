@@ -1,113 +1,67 @@
 package chuunimod.capabilities
 
-import java.util.concurrent.Callable
-
-import chuunimod.ChuuniMod
-import chuunimod.capabilities.MessageUpdateClientMana.Handler
-import io.netty.buffer.ByteBuf
-import net.minecraft.client.Minecraft
+import chuunimod.util.MiscUtils.map2nbtcomp
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.entity.player.EntityPlayerMP
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.util.EnumFacing
-import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.common.capabilities.Capability.IStorage
-import net.minecraftforge.common.capabilities.CapabilityInject
-import net.minecraftforge.common.capabilities.ICapabilitySerializable
-import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
-import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.Event
+import net.minecraftforge.event.entity.player.PlayerEvent
 
-trait ManaHandlerLike {
+trait ManaHandlerLike extends HandlerLike[ManaHandlerLike] {
 	var mana,maxMana,manaRegen:Float
 	
-	def setMana(amt:Float) = mana = amt
-	def setMaxMana(amt:Float) = maxMana = amt
-	def setManaRegen(amt:Float) = manaRegen = amt
+	protected var (lastMana,lastMax,lastRegen) = (mana,maxMana,manaRegen)
+	def hasChanged = (lastMana,lastMax,lastRegen) != (mana,maxMana,manaRegen)
+	protected def updateLast = { lastMana = mana; lastMax = maxMana; lastRegen = manaRegen }
+	
+	def setMana(amt:Float) = { updateLast; mana = Math.min(amt, maxMana) }
+	def setMaxMana(amt:Float) = { updateLast; maxMana = amt }
+	def setManaRegen(amt:Float) = { updateLast; manaRegen = amt }
 	
 	def consumeMana(amt:Float):Boolean = if(mana < amt) false else { setMana(mana-amt); true }
 	def regenMana(amt:Float):Boolean = if(mana == maxMana) false else { setMana(Math.min(mana+amt, maxMana)); true }
 	
-	def copyTo(other:ManaHandlerLike, copyCurrent:Boolean=true) { 
-		if(copyCurrent) other.setMana(mana)
+	def copyTo(other:ManaHandlerLike) { 
+		other.setMana(mana)
 		other.setMaxMana(maxMana)
 		other.setManaRegen(manaRegen)
 	}
 }
 
-abstract class ManaHandler(var mana:Float = 0, var maxMana:Float = 0, var manaRegen:Float = 0) extends ManaHandlerLike {
-	private var dirty = true
+class ManaHandler(val player:EntityPlayer=null) extends CapabilityBase[ManaHandler](ManaHandler.CAP _) with ManaHandlerLike {
+	import ManaHandler._
+	var (mana,maxMana,manaRegen) = (0f,250f,.25f)
 	
-	override def setMana(amt:Float) = { val old = mana; super.setMana(amt); dirty = dirty || old != mana }
-	override def setMaxMana(amt:Float) = { val old = maxMana; super.setMaxMana(amt); dirty = dirty || old != maxMana }
-	override def setManaRegen(amt:Float) = { val old = manaRegen; super.setManaRegen(amt); dirty = dirty || old != manaRegen }
-	
-	def updateClient(player:EntityPlayer, force:Boolean=false) = 
-		if(!player.worldObj.isRemote && (force || dirty)) { ChuuniMod.network.sendTo(new MessageUpdateClientMana(this), player.asInstanceOf[EntityPlayerMP]); dirty = false }
-}
-
-object ManaHandler {
-	def instanceFor(player:EntityPlayer) = player.getCapability(Capabilities.MANA, null)
-	def getHandlerInstance = new DefaultManaHandler
-	def getStorageInstance = new DefaultManaHandler.Storage
-	def getHandlerFactory = new Callable[DefaultManaHandler] { def call = new DefaultManaHandler }
-}
-	
-class DefaultManaHandler(cur:Float=0,max:Float=250,regen:Float=.25f) extends ManaHandler(cur,max,regen) with ICapabilitySerializable[NBTTagCompound] {
-	def hasCapability(capability:Capability[_], f:EnumFacing) = capability == Capabilities.MANA
-	def getCapability[T](capability:Capability[T], f:EnumFacing) = { if(capability == Capabilities.MANA) this else null }.asInstanceOf[T]
-	
-	def serializeNBT:NBTTagCompound = new NBTManaHandler(this).nbt
-	def deserializeNBT(nbt:NBTTagCompound) = new NBTManaHandler(nbt).copyTo(this)
-}
-
-object DefaultManaHandler {
-	class Storage extends IStorage[ManaHandler] {
-		def writeNBT(cap:Capability[ManaHandler], ins:ManaHandler, f:EnumFacing) = ins.asInstanceOf[DefaultManaHandler].serializeNBT
-		def readNBT(cap:Capability[ManaHandler], ins:ManaHandler, f:EnumFacing, nbt:NBTBase) = ins.asInstanceOf[DefaultManaHandler].deserializeNBT(nbt.asInstanceOf[NBTTagCompound])
-	}
-}
-
-class NBTManaHandler(val nbt:NBTTagCompound) extends ManaHandlerLike {
-	var mana = nbt.getFloat("mana")
-	var maxMana = nbt.getFloat("maxMana")
-	var manaRegen = nbt.getFloat("manaRegen")
-	
-	def this(mh:ManaHandlerLike) = this({
-		val nbt = new NBTTagCompound
-		nbt.setFloat("mana", mh.mana)
-		nbt.setFloat("maxMana", mh.maxMana)
-		nbt.setFloat("manaRegen", mh.manaRegen)
-		nbt
-	})
-}
-
-class MessageUpdateClientMana(mh:ManaHandlerLike) extends IMessage with ManaHandlerLike {
-	var mana,maxMana,manaRegen:Float = 0
-	if(mh != null) mh.copyTo(this)
-	
-	def this() = this(null)
-	
-	def fromBytes(buf:ByteBuf) { this.mana = buf.readFloat; this.maxMana = buf.readFloat; this.manaRegen = buf.readFloat }
-	def toBytes(buf:ByteBuf) { List(this.mana, this.maxMana, this.manaRegen) foreach buf.writeFloat }
-}
-
-object MessageUpdateClientMana {
-	class Handler extends IMessageHandler[MessageUpdateClientMana, IMessage] {
-		def onMessage(msg:MessageUpdateClientMana, ctx:MessageContext):IMessage = {
-			Minecraft.getMinecraft.addScheduledTask(new Runnable { def run = {
-				val player = Minecraft.getMinecraft.thePlayer
-				val mh = ManaHandler.instanceFor(player)
-				
-				msg.copyTo(mh)
-			}})
-			null
+	def onTick(e:PlayerTickEvent) {
+		if(!e.player.worldObj.isRemote) regenMana(manaRegen)
+		
+		if(ready && mana != lastMana) {
+			if(mana == 0) MinecraftForge.EVENT_BUS.post(ManaEmptyEvent(player, mana))
+			if(mana == maxMana) MinecraftForge.EVENT_BUS.post(ManaFullEvent(player, mana))
 		}
+		
+		if(hasChanged) { updateClient; updateLast }
 	}
 	
-	def register(net:SimpleNetworkWrapper, id:Int) = net.registerMessage(classOf[MessageUpdateClientMana.Handler], classOf[MessageUpdateClientMana], id, Side.CLIENT)
+	def serializeNBT:NBTTagCompound = Map("mana" -> mana, "maxMana" -> maxMana, "manaRegen" -> manaRegen)
+	def getClientUpdatePacket = new MessageUpdateClient(this.serializeNBT)
+}
+
+object ManaHandler extends CapabilityCompanion[ManaHandler, ManaHandlerLike] {
+	def CAP = Capabilities.MANA
+	val NAME = "ManaHandler"
+	
+	def newInstance(player:EntityPlayer) = new ManaHandler(player)
+	val handlerFactory = () => new ManaHandler
+	
+	class MessageUpdateClient(nbt:NBTTagCompound) extends MessageUpdateClientBase(nbt) { def this() = this(null) }
+	class MessageUpdateClientHandler extends MessageUpdateClientHandlerBase[MessageUpdateClient]
+	def registerClientUpdatePacket(net:SimpleNetworkWrapper, id:Int) = super.registerClientUpdatePacket[MessageUpdateClientHandler,MessageUpdateClient](net, id)
+	
+	override def persistOnPlayer(e:PlayerEvent.Clone) { super.persistOnPlayer(e); if(e.isWasDeath) instanceFor(e.getEntityPlayer).setMana(0) }
+	
+	case class ManaEmptyEvent(val player:EntityPlayer, val mana:Float) extends Event
+	case class ManaFullEvent(val player:EntityPlayer, val mana:Float) extends Event
 }

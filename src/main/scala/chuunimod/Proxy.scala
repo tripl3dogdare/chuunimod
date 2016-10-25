@@ -1,28 +1,28 @@
 package chuunimod
 
+import java.util.HashMap
+
 import chuunimod.capabilities.LevelHandler
 import chuunimod.capabilities.ManaHandler
-import chuunimod.capabilities.MessageUpdateClientLevel
-import chuunimod.capabilities.MessageUpdateClientMana
 import chuunimod.event.ChuuniEventHandler
 import chuunimod.gui.GuiChuuniOverlay
+import chuunimod.util.MiscUtils.func2callable
 import net.minecraft.client.model.ModelBiped
+import net.minecraft.client.renderer.ItemMeshDefinition
+import net.minecraft.client.renderer.block.model.ModelBakery
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.item.Item
 import net.minecraft.item.ItemArmor
+import net.minecraft.item.ItemStack
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.CapabilityManager
-import java.util.HashMap
-import net.minecraft.client.renderer.ItemMeshDefinition
-import net.minecraft.client.renderer.block.model.ModelBakery
-import net.minecraft.util.ResourceLocation
-import net.minecraft.item.ItemStack
 
 class ServerProxy {
 	def preInit {
-		CapabilityManager.INSTANCE.register(classOf[ManaHandler], ManaHandler.getStorageInstance, ManaHandler.getHandlerFactory)
-		CapabilityManager.INSTANCE.register(classOf[LevelHandler], LevelHandler.getStorageInstance, LevelHandler.getHandlerFactory)
+		CapabilityManager.INSTANCE.register(classOf[ManaHandler], new ManaHandler.Storage, ManaHandler.handlerFactory)
+		CapabilityManager.INSTANCE.register(classOf[LevelHandler], new LevelHandler.Storage, LevelHandler.handlerFactory)
 		MinecraftForge.EVENT_BUS.register(new ChuuniEventHandler)
 	}
 }
@@ -54,8 +54,8 @@ class ClientProxy extends ServerProxy {
 	def registerArmorModels {}
 	
 	def registerNetworkPackets {
-		MessageUpdateClientMana.register(ChuuniMod.network, 0)
-		MessageUpdateClientLevel.register(ChuuniMod.network, 1)
+		ManaHandler.registerClientUpdatePacket(ChuuniMod.network, 0)
+		LevelHandler.registerClientUpdatePacket(ChuuniMod.network, 1)
 	}
 	
 	def registerDefaultItemModel(item:Item) = ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName.toString))
@@ -64,7 +64,7 @@ class ClientProxy extends ServerProxy {
 		ModelBakery.registerItemVariants(item, variants map { v => new ResourceLocation(item.getRegistryName+v) }:_*)
 		ModelLoader.setCustomMeshDefinition(item, mesh)
 	}
-	def variantItemModelFactory(variants:List[String], mesh:ItemMeshDefinition)(item:Item) { registerVariantItemModel(item, variants, mesh) }
+	def variantItemModelFactory(variants:List[String], mesh:ItemMeshDefinition)(item:Item) = registerVariantItemModel(item, variants, mesh)
 }
 
 object ClientProxy {
