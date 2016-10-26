@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.CapabilityManager
+import chuunimod.model.ModelYuutaArmor
 
 class ServerProxy {
 	def preInit {
@@ -28,6 +29,8 @@ class ServerProxy {
 }
 
 class ClientProxy extends ServerProxy {
+	import ClientProxy._
+	
 	override def preInit {
 		super.preInit
 		
@@ -41,6 +44,7 @@ class ClientProxy extends ServerProxy {
 	
 	def registerItemModels {
 		registerDefaultItemModel(ItemRegistry.itemRikkaArmor)
+		registerDefaultItemModel(ItemRegistry.itemYuutaArmor)
 		
 		val applyManaWeaponModel = variantItemModelFactory(List("_normal", "_active"), new ItemMeshDefinition() {
 			override def getModelLocation(stack:ItemStack) = new ModelResourceLocation(
@@ -48,10 +52,14 @@ class ClientProxy extends ServerProxy {
 		}) _
 		
 		applyManaWeaponModel(ItemRegistry.itemRikkaWeapon)
+		applyManaWeaponModel(ItemRegistry.itemYuutaWeapon)
 	}
 	
 	def registerBlockModels {}
-	def registerArmorModels {}
+	
+	def registerArmorModels {
+		armorModels.put(ItemRegistry.itemYuutaArmor, new ModelYuutaArmor)
+	}
 	
 	def registerNetworkPackets {
 		ManaHandler.registerClientUpdatePacket(ChuuniMod.network, 0)

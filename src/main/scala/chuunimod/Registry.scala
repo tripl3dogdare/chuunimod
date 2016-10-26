@@ -25,10 +25,15 @@ object MiscRegistry {
 
 object ItemRegistry {
 	val itemRikkaArmor = register(new ItemCharacterArmor("tweseal", EntityEquipmentSlot.HEAD), "tweseal")
+	val itemYuutaArmor = register(new ItemCharacterArmor("cloakod", EntityEquipmentSlot.CHEST), "cloakod")
 	
 	val itemRikkaWeapon = register(new ItemArmorPairingManaWeapon(10.0f, 1d, 1, 200, itemRikkaArmor) {
 		override def getArmoredAttackDmg(stack:ItemStack) = baseAttackDmg*2
 	}, "sspm2")
+	
+	val itemYuutaWeapon = register(new ItemArmorPairingManaWeapon(10.0f, 1d, 1, 200, itemYuutaArmor) {
+		override def getArmoredCooldown(stack:ItemStack) = baseCooldown/2
+	}, "dfblade")
 	
 	def preInit {}
 	

@@ -4,10 +4,16 @@
 item.chuunimod.sspm2.name=Schwarz Sechs Prototype Mk.2
 item.chuunimod.sspm2.lore=In reality, just a beat-up pocket umbrella.
 item.chuunimod.sspm2.quote="In accordance with the covenant of blood, I summon thee, Wicked Lord!"
+item.chuunimod.dfblade.name=Dark Flame Blade
+item.chuunimod.dfblade.lore=For a plastic Halloween sword, it's surprisingly effective.
+item.chuunimod.dfblade.quote="Do you want to stay in this boring reality, or do you want to come with me and change that reality?"
 
 item.chuunimod.tweseal.name=Seal of the Wicked Eye
 item.chuunimod.tweseal.lore=A medical eyepatch that looks like it's been used for many years.
 item.chuunimod.tweseal.quote="Reality be rent... Synapse, break... Banishment this world!"
+item.chuunimod.cloakod.name=Cloak of Darkness
+item.chuunimod.cloakod.lore=As emo as it gets.
+item.chuunimod.cloakod.quote="Vanish into the embrace of dark flames!"
 
 item.chuunimod.manaweapon.atkdmg=Attack Damage: %s damage
 item.chuunimod.manaweapon.atkspd=Attack Speed: %s attacks/sec
