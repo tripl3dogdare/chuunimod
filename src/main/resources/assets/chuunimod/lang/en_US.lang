@@ -7,6 +7,12 @@ item.chuunimod.sspm2.quote="In accordance with the covenant of blood, I summon t
 item.chuunimod.dfblade.name=Dark Flame Blade
 item.chuunimod.dfblade.lore=For a plastic Halloween sword, it's surprisingly effective.
 item.chuunimod.dfblade.quote="Do you want to stay in this boring reality, or do you want to come with me and change that reality?"
+item.chuunimod.ladle.name=The Priestess's Ladle
+item.chuunimod.ladle.lore=Chosen weapon of Takanashi Touka, master chef.
+item.chuunimod.ladle.quote="Encouraging her like that... is irresponsible."
+item.chuunimod.mjolnir.name=Mjolnir Hammer
+item.chuunimod.mjolnir.lore=Who'd tie sandbags to their hair???
+item.chuunimod.mjolnir.quote="Death!"
 
 item.chuunimod.tweseal.name=Seal of the Wicked Eye
 item.chuunimod.tweseal.lore=A medical eyepatch that looks like it's been used for many years.
@@ -14,6 +20,12 @@ item.chuunimod.tweseal.quote="Reality be rent... Synapse, break... Banishment th
 item.chuunimod.cloakod.name=Cloak of Darkness
 item.chuunimod.cloakod.lore=As emo as it gets.
 item.chuunimod.cloakod.quote="Vanish into the embrace of dark flames!"
+item.chuunimod.tpcollar.name=The Priestess's Collar
+item.chuunimod.tpcollar.lore=Why does she wear this thing, anyway?
+item.chuunimod.tpcollar.quote="Learn the difference between fantasy and reality."
+item.chuunimod.twintails.name=Twintails
+item.chuunimod.twintails.lore=Cute, in a childish sort of way.
+item.chuunimod.twintails.quote="Mjonir Tornaaaaa-oof!"
 
 item.chuunimod.manaweapon.atkdmg=Attack Damage: %s damage
 item.chuunimod.manaweapon.atkspd=Attack Speed: %s attacks/sec
