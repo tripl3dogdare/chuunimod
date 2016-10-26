@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.CapabilityManager
+import chuunimod.model.ModelYuutaArmor
 
 class ServerProxy {
 	def preInit {
@@ -28,6 +29,8 @@ class ServerProxy {
 }
 
 class ClientProxy extends ServerProxy {
+	import ClientProxy._
+	
 	override def preInit {
 		super.preInit
 		
@@ -53,7 +56,10 @@ class ClientProxy extends ServerProxy {
 	}
 	
 	def registerBlockModels {}
-	def registerArmorModels {}
+	
+	def registerArmorModels {
+		armorModels.put(ItemRegistry.itemYuutaArmor, new ModelYuutaArmor)
+	}
 	
 	def registerNetworkPackets {
 		ManaHandler.registerClientUpdatePacket(ChuuniMod.network, 0)
