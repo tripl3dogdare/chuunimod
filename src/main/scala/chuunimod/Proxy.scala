@@ -45,6 +45,7 @@ class ClientProxy extends ServerProxy {
 	def registerItemModels {
 		registerDefaultItemModel(ItemRegistry.itemRikkaArmor)
 		registerDefaultItemModel(ItemRegistry.itemYuutaArmor)
+		registerDefaultItemModel(ItemRegistry.itemToukaArmor)
 		
 		val applyManaWeaponModel = variantItemModelFactory(List("_normal", "_active"), new ItemMeshDefinition() {
 			override def getModelLocation(stack:ItemStack) = new ModelResourceLocation(
@@ -53,6 +54,7 @@ class ClientProxy extends ServerProxy {
 		
 		applyManaWeaponModel(ItemRegistry.itemRikkaWeapon)
 		applyManaWeaponModel(ItemRegistry.itemYuutaWeapon)
+		applyManaWeaponModel(ItemRegistry.itemToukaWeapon)
 	}
 	
 	def registerBlockModels {}
