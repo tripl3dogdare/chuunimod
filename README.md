@@ -7,9 +7,9 @@ This is a project I started a while back, coding in Java and honestly doing ever
 - [x] Mana System
 - [x] Level System
 - [x] Tyrant's Eye Weapon/Armor Set
-- [ ] The Priestess Set
-- [ ] Dark Flame Master Set
-- [ ] Mjolnir Hammer Set
+- [x] The Priestess Set
+- [x] Dark Flame Master Set
+- [x] Mjolnir Hammer Set
 - [ ] Mori Summer Set
 - [ ] Sophia Ring SP Saturn VII Set
 - [ ] Angel of Dreams Set
