@@ -1,0 +1,18 @@
+{
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "chuunimod:items/sophiawand_active"
+	},
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [0,-90,45],
+            "translation": [0,8,2],
+            "scale": [1.5,1.5,1.5]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [0,-90,-45],
+            "translation": [0,8,2],
+            "scale": [1.5,1.5,1.5]
+        }
+    }
+}
