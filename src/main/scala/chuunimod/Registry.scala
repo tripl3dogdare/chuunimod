@@ -28,6 +28,7 @@ object ItemRegistry {
 	val itemYuutaArmor = register(new ItemCharacterArmor("cloakod", EntityEquipmentSlot.CHEST), "cloakod")
 	val itemToukaArmor = register(new ItemCharacterArmor("tpcollar", EntityEquipmentSlot.CHEST), "tpcollar")
 	val itemDekoArmor = register(new ItemCharacterArmor("twintails", EntityEquipmentSlot.HEAD), "twintails")
+	val itemShichiArmor = register(new ItemCharacterArmor("longscarf", EntityEquipmentSlot.CHEST), "longscarf")
 	
 	val itemRikkaWeapon = register(new ItemArmorPairingManaWeapon(10.0f, 1d, 1, 200, itemRikkaArmor) {
 		override def getArmoredAttackDmg(stack:ItemStack) = baseAttackDmg*2
@@ -44,6 +45,10 @@ object ItemRegistry {
 	val itemDekoWeapon = register(new ItemArmorPairingManaWeapon(10.0f, 1d, 1, 200, itemDekoArmor) {
 		override def getArmoredAttackSpd(stack:ItemStack) = baseAttackSpd*2
 	}, "mjolnir")
+	
+	val itemShichiWeapon = register(new ItemArmorPairingManaWeapon(10.0f, 1d, 1, 200, itemShichiArmor) {
+		override def getArmoredAttackSpd(stack:ItemStack) = baseAttackSpd*2
+	}, "sophiawand")
 	
 	def preInit {}
 	

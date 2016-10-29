@@ -13,6 +13,9 @@ item.chuunimod.ladle.quote="Encouraging her like that... is irresponsible."
 item.chuunimod.mjolnir.name=Mjolnir Hammer
 item.chuunimod.mjolnir.lore=Who'd tie sandbags to their hair???
 item.chuunimod.mjolnir.quote="Death!"
+item.chuunimod.sophiawand.name=Sophia's Wand
+item.chuunimod.sophiawand.lore=A light-up little kid's toy. Who'd want to carry this thing around?
+item.chuunimod.sophiawand.quote="Sing, cherubim... Descend, seraphim... Physical linkage!"
 
 item.chuunimod.tweseal.name=Seal of the Wicked Eye
 item.chuunimod.tweseal.lore=A medical eyepatch that looks like it's been used for many years.
@@ -26,6 +29,9 @@ item.chuunimod.tpcollar.quote="Learn the difference between fantasy and reality.
 item.chuunimod.twintails.name=Twintails
 item.chuunimod.twintails.lore=Cute, in a childish sort of way.
 item.chuunimod.twintails.quote="Mjonir Tornaaaaa-oof!"
+item.chuunimod.longscarf.name=Long Scarf
+item.chuunimod.longscarf.lore=Almost reminds me of that other one, though it's not as gaudy... Who wore that one again?
+item.chuunimod.longscarf.quote="The moment you say a word of parting, you've already parted."
 
 item.chuunimod.manaweapon.atkdmg=Attack Damage: %s damage
 item.chuunimod.manaweapon.atkspd=Attack Speed: %s attacks/sec
