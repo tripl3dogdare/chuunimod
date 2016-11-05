@@ -2,7 +2,6 @@ package chuunimod.event
 
 import java.util.concurrent.ThreadLocalRandom
 
-import chuunimod.ChuuniMod
 import chuunimod.capabilities.LevelHandler
 import chuunimod.capabilities.ManaHandler
 import net.minecraft.entity.boss.EntityDragon
@@ -10,15 +9,12 @@ import net.minecraft.entity.boss.EntityWither
 import net.minecraft.entity.monster.EntityGhast
 import net.minecraft.entity.monster.EntityMob
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.util.ResourceLocation
 import net.minecraft.util.text.TextComponentString
 import net.minecraftforge.event.AttachCapabilitiesEvent
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
 import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase
-import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent
 
 class ChuuniEventHandler {
 	
@@ -66,14 +62,14 @@ class ChuuniEventHandler {
 	
 	//===== CHUUNI EVENTS =====//
 	
-	@SubscribeEvent def onPlayerLevelUp(e:LevelHandler.LevelUpEvent) {
+	@SubscribeEvent def onPlayerLevelUp(e:LevelUpEvent) {
 		val mh = ManaHandler.instanceFor(e.player)
 		mh.setMaxMana(250*e.newLevel) //TODO: balance and change regen (change from max +250 per level to max *2 on even, regen *2 on odd?)
 		
 		if(e.player.worldObj.isRemote && e.newLevel > e.oldLevel) e.player.addChatComponentMessage(new TextComponentString("You leveled up!"))
 	}
 	
-	@SubscribeEvent def onPlayerLevelMax(e:LevelHandler.LevelMaxEvent) {
+	@SubscribeEvent def onPlayerLevelMax(e:LevelMaxEvent) {
 		if(e.player.worldObj.isRemote) e.player.addChatComponentMessage(new TextComponentString("You hit the maximum level!"))
 	}
 	
