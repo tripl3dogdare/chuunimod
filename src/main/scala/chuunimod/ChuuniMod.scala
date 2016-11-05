@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry
 object ChuuniMod {
 	final val MODID   = "chuunimod"
 	final val NAME    = "The Chuunibyou Mod"
-	final val VERSION = "INDEV"
+	final val VERSION = "beta-11-4-16-a"
 	final val DEPS    = ""
 	
 	@Instance(MODID) var instance = null
