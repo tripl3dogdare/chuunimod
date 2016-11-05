@@ -13,7 +13,7 @@ buildscript {
 apply plugin: 'scala'
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "INDEV"
+version = "beta-11-4-16"
 group= "chuunimod"
 archivesBaseName = "chuunimod"
 
