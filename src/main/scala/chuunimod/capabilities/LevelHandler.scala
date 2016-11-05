@@ -8,6 +8,9 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
+import net.minecraft.util.text.TextComponentString
+import chuunimod.event.LevelUpEvent
+import chuunimod.event.LevelMaxEvent
 
 trait LevelHandlerLike extends HandlerLike[LevelHandlerLike] {
 	var level,exp,maxLevel:Int
@@ -48,8 +51,8 @@ class LevelHandler(val player:EntityPlayer=null) extends CapabilityBase[LevelHan
 	
 	def onTick(e:PlayerTickEvent) {
 		if(ready && level != lastLevel) {
-			MinecraftForge.EVENT_BUS.post(LevelUpEvent(player, lastLevel, level))
-			if(level == maxLevel) MinecraftForge.EVENT_BUS.post(LevelMaxEvent(player, lastLevel, level))
+			MinecraftForge.EVENT_BUS.post(new LevelUpEvent(player, lastLevel, level))
+			if(level == maxLevel) MinecraftForge.EVENT_BUS.post(new LevelMaxEvent(player, lastLevel, level))
 		}
 		
 		if(hasChanged) { updateClient; updateLast }
@@ -69,9 +72,6 @@ object LevelHandler extends CapabilityCompanion[LevelHandler, LevelHandlerLike] 
 	class MessageUpdateClient(nbt:NBTTagCompound) extends MessageUpdateClientBase(nbt) { def this() = this(null) }
 	class MessageUpdateClientHandler extends MessageUpdateClientHandlerBase[MessageUpdateClient]
 	def registerClientUpdatePacket(net:SimpleNetworkWrapper, id:Int) = super.registerClientUpdatePacket[MessageUpdateClientHandler,MessageUpdateClient](net, id)
-	
-	case class LevelUpEvent(val player:EntityPlayer, val oldLevel:Int, val newLevel:Int) extends Event
-	case class LevelMaxEvent(val player:EntityPlayer, val oldLevel:Int, val newLevel:Int) extends Event
 }
 
 

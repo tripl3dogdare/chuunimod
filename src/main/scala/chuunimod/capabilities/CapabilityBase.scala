@@ -40,7 +40,7 @@ abstract class CapabilityBase[T <: CapabilityBase[T]](val CAP:() => Capability[T
 		if(!player.worldObj.isRemote) ChuuniMod.network.sendTo(getClientUpdatePacket, player.asInstanceOf[EntityPlayerMP])
 	def getClientUpdatePacket:IMessage
 		
-	@SubscribeEvent final def onTick_(e:PlayerTickEvent) = { if(e.player == player) onTick(e); ticksAttached += 1 }
+	@SubscribeEvent final def onTick_(e:PlayerTickEvent) = { if(e.player.getUniqueID == player.getUniqueID) onTick(e); ticksAttached += 1 }
 	protected def onTick(e:PlayerTickEvent)
 	
 	def deserializeNBT(nbt:NBTTagCompound) = (nbt:Map[String,Any]) foreach { case (key,value) => {

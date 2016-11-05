@@ -8,6 +8,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.event.entity.player.PlayerEvent
+import chuunimod.event.ManaFullEvent
+import chuunimod.event.ManaEmptyEvent
 
 trait ManaHandlerLike extends HandlerLike[ManaHandlerLike] {
 	var mana,maxMana,manaRegen:Float
@@ -38,8 +40,8 @@ class ManaHandler(val player:EntityPlayer=null) extends CapabilityBase[ManaHandl
 		if(!e.player.worldObj.isRemote) regenMana(manaRegen)
 		
 		if(ready && mana != lastMana) {
-			if(mana == 0) MinecraftForge.EVENT_BUS.post(ManaEmptyEvent(player, mana))
-			if(mana == maxMana) MinecraftForge.EVENT_BUS.post(ManaFullEvent(player, mana))
+			if(mana == 0) MinecraftForge.EVENT_BUS.post(new ManaEmptyEvent(player, mana))
+			if(mana == maxMana) MinecraftForge.EVENT_BUS.post(new ManaFullEvent(player, mana))
 		}
 		
 		if(hasChanged) { updateClient; updateLast }
@@ -61,7 +63,4 @@ object ManaHandler extends CapabilityCompanion[ManaHandler, ManaHandlerLike] {
 	def registerClientUpdatePacket(net:SimpleNetworkWrapper, id:Int) = super.registerClientUpdatePacket[MessageUpdateClientHandler,MessageUpdateClient](net, id)
 	
 	override def persistOnPlayer(e:PlayerEvent.Clone) { super.persistOnPlayer(e); if(e.isWasDeath) instanceFor(e.getEntityPlayer).setMana(0) }
-	
-	case class ManaEmptyEvent(val player:EntityPlayer, val mana:Float) extends Event
-	case class ManaFullEvent(val player:EntityPlayer, val mana:Float) extends Event
 }
